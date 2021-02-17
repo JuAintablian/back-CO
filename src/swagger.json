@@ -44,7 +44,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Pet object that needs to be added to the store",
+            "description": "Product object that needs to be added to the store",
             "required": true,
             "schema": {
               "$ref": "#/definitions/Product"
@@ -83,7 +83,7 @@
         }
       }
     },
-    "/product/repo": {
+    "/product/repo/{qtt}": {
       "get": {
         "tags": [
           "product"
@@ -100,7 +100,7 @@
         "parameters": [
           {
             "qtd": "number",
-            "name": "qtd",
+            "name": "qtt",
             "description": "Quantity max to replacement",
             "required": true
           }
@@ -157,7 +157,7 @@
         "tags": [
           "product"
         ],
-        "summary": "Add a new product",
+        "summary": "Update a product",
         "description": "",
         "operationId": "editProduct",
         "consumes": [
@@ -170,7 +170,7 @@
           {
             "name": "productId",
             "in": "path",
-            "description": "name that need to be updated",
+            "description": "product that need to be updated",
             "required": true,
             "type": "string"
           },
@@ -348,7 +348,7 @@
             "description": "",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Product"
+              "$ref": "#/definitions/Category"
             }
           }
         ],
@@ -458,8 +458,8 @@
           "example": "Produto 1"
         },
         "category": {
-          "type": "string",
-          "example": "Categoria 1"
+          "type": "number",
+          "example": 2
         },
         "price": {
           "type": "number",
