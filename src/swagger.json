@@ -99,8 +99,9 @@
         ],
         "parameters": [
           {
-            "qtd": "number",
+            "type": "number",
             "name": "qtt",
+            "in": "path",
             "description": "Quantity max to replacement",
             "required": true
           }
