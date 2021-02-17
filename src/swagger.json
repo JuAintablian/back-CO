@@ -6,7 +6,7 @@
     "title": "API Controle de Estoque",
     "termsOfService": "http://swagger.io/terms/"
   },
-  "host": "back-controle-estoque.herokuapp.com",
+  "host": "back-controle-estoque.herokuapp.com/api",
   "tags": [
     {
       "name": "product",
