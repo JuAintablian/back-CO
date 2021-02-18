@@ -439,6 +439,10 @@
         "name": {
           "type": "string",
           "example": "Categoria 1"
+        },
+        "actions": {
+          "type": "boolean",
+          "example": true
         }
       }
     },

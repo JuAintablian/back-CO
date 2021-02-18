@@ -4,7 +4,7 @@ const db = require("../config/database");
 // ==> Método responsável por obter a lista de Produtos:
 
 exports.getProductList = async (req, res) => {
-  const response = await db.query('SELECT * FROM product ORDER BY id ASC');
+  const response = await db.query('SELECT * FROM product where visible = true ORDER BY id ASC');
 
   res.status(200).send(response.rows);
 };
@@ -31,9 +31,10 @@ exports.getProductRepo = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   const { name, price, category, quantity } = req.body;
+  const visible = true;
   const { rows } = await db.query(
-    "INSERT INTO product (name, price, category, quantity) VALUES ($1, $2, $3, $4)",
-    [name, price, category, quantity]
+    "INSERT INTO product (name, price, category, quantity, visible) VALUES ($1, $2, $3, $4, $5)",
+    [name, price, category, quantity, visible]
   );
 
   res.status(201).send({
@@ -41,6 +42,24 @@ exports.createProduct = async (req, res) => {
     body: {
       product: { name, price, category, quantity }
     },
+  });
+};
+
+// ==> Método responsável por adicionar mais quantidade a um 'Produto':
+
+exports.addMoreQttProduct = async (req, res) => {
+  const { id, quantity } = req.body;
+
+  const atual = await db.query('SELECT quantity FROM product WHERE id = $1', [id]);
+  const sum = atual.rows[0].quantity + quantity
+
+  const { rows } = await db.query(
+    "UPDATE product SET quantity = $1 WHERE id = $2",
+    [sum, id]
+  );
+
+  res.status(200).send({
+    message: "Product added successfully!"
   });
 };
 
@@ -65,14 +84,15 @@ exports.deleteProduct = async (req, res) => {
   
   const hasProduct = await db.query('SELECT * FROM product WHERE id = $1', [productId]);
 
-  if(hasProduct.rows.length < 1) {
+  if (hasProduct.rows.length < 1) {
     return res.status(500).send({ message: 'Não foi encontrada nenhum Produto', productId });
-  } else {
-    await db.query('DELETE FROM product WHERE id = $1', [
+  } 
+
+    await db.query('UPDATE product SET visible = false WHERE id = $1', [
       productId
     ]);
   
     res.status(200).send({ message: 'Product deleted successfully!', productId });
-  }
+  
   
 };

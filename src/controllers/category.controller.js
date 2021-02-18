@@ -22,9 +22,11 @@ exports.getCategoryById = async (req, res) => {
 
 exports.createCategory = async (req, res) => {
   const { name } = req.body;
-  const { rows } = await db.query(
-    "INSERT INTO category (name) VALUES ($1)",
-    [name]
+  const actions = true;
+  
+  await db.query(
+    "INSERT INTO category (name, actions) VALUES ($1, $2)",
+    [name, actions]
   );
 
   res.status(201).send({
@@ -41,7 +43,7 @@ exports.updateCategory = async (req, res) => {
   const categoryId = parseInt(req.params.id);
   const { name } = req.body;
 
-  const response = await db.query(
+  await db.query(
     "UPDATE category SET name = $1 WHERE id = $2",
     [name, categoryId]
   );
@@ -53,17 +55,25 @@ exports.updateCategory = async (req, res) => {
 
 exports.deleteCategory = async (req, res) => {
   const categoryId = parseInt(req.params.id);
-  
-  const hasCategory = await db.query('SELECT * FROM category WHERE id = $1', [categoryId]);
 
-  if(hasCategory.rows.length < 1) {
+  const hasCategory = await db.query('SELECT * FROM category WHERE id = $1', [categoryId]);
+  const hasProduct = await db.query('SELECT * FROM product WHERE category = $1', [categoryId]);
+
+  if (hasCategory.rows.length < 1) {
     return res.status(500).send({ message: 'Não foi encontrada nenhuma categoria', categoryId });
-  } else {
-    await db.query('DELETE FROM category WHERE id = $1', [
-      categoryId
-    ]);
-  
-    res.status(200).send({ message: 'Product deleted successfully!', categoryId });
   }
   
+  if (hasProduct.rows.length > 0) {
+      await db.query(
+        "UPDATE product SET category = 15 WHERE category = $1",
+        [categoryId]
+      )
+  }
+
+  await db.query('DELETE FROM category WHERE id = $1', [
+    categoryId
+  ]);
+
+  res.status(200).send({ message: 'Category deleted successfully!', categoryId });
+
 };
