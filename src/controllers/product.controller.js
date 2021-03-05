@@ -1,10 +1,16 @@
 const db = require("../config/database");
 
-
 // ==> Método responsável por obter a lista de Produtos:
 
 exports.getProductList = async (req, res) => {
-  const response = await db.query('SELECT * FROM product where visible = true ORDER BY id ASC');
+  const response = await db.query(
+    `SELECT product.*, category.name as categoryName
+    FROM product 
+    JOIN category 
+    ON category.id = product.category
+    WHERE product.visible = true 
+    ORDER BY id ASC`
+  );
 
   res.status(200).send(response.rows);
 };
@@ -14,7 +20,13 @@ exports.getProductList = async (req, res) => {
 exports.getProductById = async (req, res) => {
   const productId = parseInt(req.params.id);
 
-  const response = await db.query('SELECT * FROM product WHERE id = $1', [productId]);
+  const response = await db.query(
+    `SELECT product.*, category.name as categoryName
+    FROM product 
+    JOIN category 
+    ON category.id = product.category
+    WHERE product.id = $1`, [productId]);
+
   res.status(200).send(response.rows);
 };
 
@@ -23,7 +35,30 @@ exports.getProductById = async (req, res) => {
 exports.getProductRepo = async (req, res) => {
   const quantity = parseInt(req.params.qtt);
 
-  const response = await db.query('SELECT * FROM product WHERE quantity <= $1', [quantity]);
+  const response = await db.query(
+    `SELECT product.*, category.name as categoryName
+    FROM product 
+    JOIN category 
+    ON category.id = product.category
+    WHERE product.quantity <= $1`, [quantity]);
+
+  res.status(200).send(response.rows);
+};
+
+// ==> Método responsável por obter a lista de produtos mais vendidos:
+
+exports.getProductBestSeller = async (req, res) => {
+  const dateStart = parseInt(req.params.start);
+  const dateEnd = parseInt(req.params.end);
+
+  const response = await db.query(
+    `SELECT po.*, category.name as categoryName
+    FROM productsorder as po
+    JOIN category 
+    ON category.id = po.category
+    WHERE po.date between $1 and $2 
+    ORDER BY po.qtd DESC`, [dateStart, dateEnd]);
+
   res.status(200).send(response.rows);
 };
 

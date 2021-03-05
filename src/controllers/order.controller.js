@@ -35,7 +35,7 @@ exports.getOrderById = async (req, res) => {
     `SELECT po.qtd, pd.name, pd.price, (pd.price * po.qtd) as totalValue 
     FROM productsorder as po 
     INNER JOIN product as pd 
-    ON po.idProduct=pd.id 
+    ON po.idProduct = pd.id 
     WHERE po.idorder = $1`, [orderId]);
 
   const paymentForm = await db.query(
@@ -71,8 +71,8 @@ exports.createOrder = async (req, res) => {
     const sum = qttCurr.rows[0].quantity - item.qtt
     
     await db.query(
-      `INSERT INTO productsorder (idProduct, idorder, qtd, date) VALUES ($1, $2, $3, $4)`,
-      [item.id, idorder.rows[0].max, item.qtt, date]
+      `INSERT INTO productsorder (idProduct, idorder, qtd, date, category) VALUES ($1, $2, $3, $4, $5)`,
+      [item.id, idorder.rows[0].max, item.qtt, date, item.category]
     )
     
     
