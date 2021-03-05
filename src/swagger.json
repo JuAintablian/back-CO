@@ -102,6 +102,45 @@
         }
       }
     },
+    "/product/sale/{start}/{end}": {
+      "get": {
+        "tags": ["product"],
+        "summary": "Get products replacement list",
+        "description": "",
+        "operationId": "getProductBestSeller",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "type": "number",
+            "name": "start",
+            "in": "path",
+            "description": "Start date period - YYYYMMDD",
+            "required": true,
+            "example": "20200301"
+          },
+          {
+            "type": "number",
+            "name": "end",
+            "in": "path",
+            "description": "End date period - YYYYMMDD",
+            "required": true,
+            "example": "20200330"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/product/{productId}": {
       "get": {
         "tags": ["product"],
@@ -473,6 +512,120 @@
           }
         }
       }
+    },
+    "/order": {
+      "post": {
+        "tags": ["order"],
+        "summary": "Add a new order",
+        "description": "",
+        "operationId": "createOrder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Order object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["order"],
+        "summary": "Get order list",
+        "description": "",
+        "operationId": "getOrderList",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/order/{orderId}": {
+      "get": {
+        "tags": ["order"],
+        "summary": "Get order by id",
+        "description": "",
+        "operationId": "getOrderById",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "ID of order to return",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/order/period/{start}/{end}": {
+      "get": {
+        "tags": ["order"],
+        "summary": "Get order list by period",
+        "description": "",
+        "operationId": "getOrdersListByPeriod",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "type": "number",
+            "name": "start",
+            "in": "path",
+            "description": "Start date period - YYYYMMDD",
+            "required": true,
+            "example": "20200301"
+          },
+          {
+            "type": "number",
+            "name": "end",
+            "in": "path",
+            "description": "End date period - YYYYMMDD",
+            "required": true,
+            "example": "20200330"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -486,16 +639,20 @@
         "products": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Product"
+            "$ref": "#/definitions/ProductOrder"
           }
         },
-        "orderDate": {
+        "date": {
           "type": "string",
           "format": "date-time"
         },
         "paymentForm": {
-          "type": "string",
-          "example": "Débito"
+          "type": "number",
+          "example": 1
+        },
+        "total": {
+          "type": "number",
+          "example": 100
         }
       },
       "xml": {
@@ -556,6 +713,24 @@
         "price": {
           "type": "number",
           "example": 30
+        },
+        "quantity": {
+          "type": "number",
+          "example": 100
+        }
+      }
+    },
+    "ProductOrder": {
+      "type": "object",
+      "required": ["id", "category", "quantity"],
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 21
+        },
+        "category": {
+          "type": "number",
+          "example": 2
         },
         "quantity": {
           "type": "number",

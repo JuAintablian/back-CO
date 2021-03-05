@@ -68,11 +68,11 @@ exports.createOrder = async (req, res) => {
 
   products.map(async(item) => {
     const qttCurr = await db.query('SELECT quantity FROM product WHERE id = $1', [item.id]);
-    const sum = qttCurr.rows[0].quantity - item.qtt
+    const sum = qttCurr.rows[0].quantity - item.quantity
     
     await db.query(
       `INSERT INTO productsorder (idProduct, idorder, qtd, date, category) VALUES ($1, $2, $3, $4, $5)`,
-      [item.id, idorder.rows[0].max, item.qtt, date, item.category]
+      [item.id, idorder.rows[0].max, item.quantity, date, item.category]
     )
     
     
