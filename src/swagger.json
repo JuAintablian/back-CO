@@ -558,6 +558,24 @@
         }
       }
     },
+    "/order/currMonth": {
+      "get": {
+        "tags": ["order"],
+        "summary": "Get order list on current month",
+        "description": "",
+        "operationId": "getOrderListCurrMonth",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/order/{orderId}": {
       "get": {
         "tags": ["order"],

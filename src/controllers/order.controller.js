@@ -7,10 +7,25 @@ exports.getOrdersList = async (req, res) => {
   const response = await db.query(
     `SELECT orders.*, pf.name as paymentFormName 
     FROM orders JOIN paymentForm as pf ON pf.id = orders.paymentForm 
+    ORDER BY date DESC`
+  );
+
+  res.status(200).send({ data: response.rows });
+};
+
+// ==> Método responsável por obter a lista de Vendas do mês atual:
+
+exports.getOrdersListCurrMonth = async (req, res) => {
+  const response = await db.query(
+    `SELECT orders.*, pf.name as paymentFormName 
+    FROM orders JOIN paymentForm as pf ON pf.id = orders.paymentForm 
     WHERE Extract(month from date) >= Extract(month from Now()) AND Extract(month from date) <= Extract(month from Now() + Interval \'20 day\') 
     ORDER BY date DESC`
   );
-  res.status(200).send(response.rows);
+
+  const now = new Date()
+  const month =  `${now.getMonth() + 1}/${now.getFullYear()}`
+  res.status(200).send({ data: response.rows, month});
 };
 
 // ==> Método responsável por obter a lista de Vendas por periodo:
